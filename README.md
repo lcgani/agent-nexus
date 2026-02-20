@@ -155,13 +155,6 @@ python -m src.cli generate <API_URL>
 python -m src.cli search "<query>"
 ```
 
-## Requirements
-
-- Python 3.11 or higher
-- Docker & Docker Compose
-- 4GB RAM minimum
-- Internet connection for API discovery
-
 ## License
 
 MIT
