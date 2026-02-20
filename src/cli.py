@@ -28,33 +28,20 @@ def cli():
 @cli.command()
 @click.argument('api_url')
 @click.option('--output-dir', default='generated_tools', help='Output directory')
-def generate(api_url, output_dir):
-    click.echo(f"Generating tool for: {api_url}")
-
+@click.option('--skip-index', is_flag=True, help='Skip Elasticsearch indexing for speed')
+def generate(api_url, output_dir, skip_index):
     config = Config()
     es = ESClient(config.elasticsearch_url, config.elasticsearch_api_key)
 
-    click.echo("Discovering API structure...")
-    introspector = APIIntrospector(es)
+    introspector = APIIntrospector(es, skip_index=skip_index)
     discovery = introspector.discover(api_url)
     
     if discovery['discovery_status'] == 'failed':
-        click.echo(f"Discovery failed: {discovery.get('error_message')}")
+        click.echo(f"Failed: {discovery.get('error_message')}")
         return
     
-    click.echo(f"✓ Discovered {discovery['total_endpoints']} endpoints")
-    
-    click.echo("Generating tool code...")
-    generator = ToolGenerator(es)
+    generator = ToolGenerator(es, skip_index=skip_index)
     tool_data = generator.generate(api_url)
-    
-    click.echo(f"✓ Generated {tool_data['tool_name']} tool")
-    
-    click.echo("Indexing in catalog...")
-    search_agent = CatalogSearch(es)
-    search_agent.index_tool(tool_data)
-    
-    click.echo(f"✓ Indexed in catalog")
     
     os.makedirs(output_dir, exist_ok=True)
     
@@ -67,9 +54,7 @@ def generate(api_url, output_dir):
     with open(readme_file, 'w') as f:
         f.write(tool_data['readme'])
     
-    click.echo(f"\n Tool generated successfully!")
-    click.echo(f"Files saved to: {output_dir}/")
-    click.echo(f"Generation time: {tool_data['generation_time_seconds']:.2f}s")
+    click.echo(f"✓ {tool_data['tool_name']} ({tool_data['generation_time_seconds']:.1f}s)")
 
 
 @cli.command()

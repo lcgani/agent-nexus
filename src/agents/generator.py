@@ -13,14 +13,14 @@ logger = logging.getLogger(__name__)
 class ToolGenerator:
     """Generates Agent Builder tool code from API specs"""
     
-    def __init__(self, es_client, templates_dir='templates'):
+    def __init__(self, es_client, templates_dir='templates', skip_index=False):
         self.es = es_client
         self.jinja_env = Environment(loader=FileSystemLoader(templates_dir))
+        self.skip_index = skip_index
     
     def generate(self, api_url: str) -> Dict:
         """Generate tool from discovered API"""
         start_time = time.time()
-        logger.info(f"Generating tool for: {api_url}")
         
         discovery_data = self._get_discovery_data(api_url)
         if not discovery_data:
@@ -28,7 +28,6 @@ class ToolGenerator:
         
         existing_tool = self._check_existing_tool(api_url)
         if existing_tool:
-            logger.info(f"Tool already exists for: {api_url}")
             return existing_tool
         
         tool_code = self._generate_tool_code(discovery_data)
@@ -56,8 +55,9 @@ class ToolGenerator:
             'generation_time_seconds': time.time() - start_time
         }
         
-        self._store_tool(tool_data)
-        logger.info(f"Tool generated in {tool_data['generation_time_seconds']:.2f}s")
+        if not self.skip_index:
+            self._store_tool(tool_data)
+        
         return tool_data
 
     
@@ -68,7 +68,6 @@ class ToolGenerator:
             result = self.es.client.get(index="api-discoveries", id=doc_id)
             return result['_source']
         except Exception as e:
-            logger.debug(f"Direct get failed: {e}, trying query")
             query = {"query": {"term": {"api_url.keyword": api_url}}}
             result = self.es.search(index="api-discoveries", body=query)
             if result['hits']['total']['value'] > 0:
@@ -127,5 +126,7 @@ class {tool_class}:
         return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower().replace(' ', '_').replace('-', '_')
     
     def _store_tool(self, tool_data: Dict) -> None:
-        self.es.index(index='agent-tools', id=tool_data['tool_id'], document=tool_data)
-        logger.info(f"Stored tool: {tool_data['tool_name']}")
+        try:
+            self.es.index(index='agent-tools', id=tool_data['tool_id'], document=tool_data, timeout='2s')
+        except Exception as e:
+            pass

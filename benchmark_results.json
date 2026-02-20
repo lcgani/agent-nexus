@@ -1,0 +1,74 @@
+{
+  "timestamp": "2026-02-21T01:52:55.252962",
+  "total": 10,
+  "successful": 10,
+  "failed": 0,
+  "metrics": {
+    "avg_time": 40.76,
+    "min_time": 29.31,
+    "max_time": 55.22,
+    "under_30s": 1
+  },
+  "results": [
+    {
+      "api": "https://jsonplaceholder.typicode.com",
+      "success": true,
+      "duration": 52.9,
+      "error": null
+    },
+    {
+      "api": "https://reqres.in/api",
+      "success": true,
+      "duration": 42.69,
+      "error": null
+    },
+    {
+      "api": "https://httpbin.org",
+      "success": true,
+      "duration": 36.53,
+      "error": null
+    },
+    {
+      "api": "https://dog.ceo/api",
+      "success": true,
+      "duration": 30.02,
+      "error": null
+    },
+    {
+      "api": "https://catfact.ninja",
+      "success": true,
+      "duration": 29.31,
+      "error": null
+    },
+    {
+      "api": "https://api.coindesk.com/v1",
+      "success": true,
+      "duration": 54.11,
+      "error": null
+    },
+    {
+      "api": "https://api.nationalize.io",
+      "success": true,
+      "duration": 55.22,
+      "error": null
+    },
+    {
+      "api": "https://api.agify.io",
+      "success": true,
+      "duration": 34.98,
+      "error": null
+    },
+    {
+      "api": "https://api.genderize.io",
+      "success": true,
+      "duration": 30.29,
+      "error": null
+    },
+    {
+      "api": "https://restcountries.com/v3.1",
+      "success": true,
+      "duration": 41.5,
+      "error": null
+    }
+  ]
+}

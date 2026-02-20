@@ -13,8 +13,8 @@ class ESClient:
         else:
             self.client = Elasticsearch(url)
     
-    def index(self, index: str, id: str, document: Dict[str, Any]):
-        return self.client.index(index=index, id=id, document=document)
+    def index(self, index: str, id: str, document: Dict[str, Any], timeout: str = '10s'):
+        return self.client.index(index=index, id=id, document=document, timeout=timeout)
     
     def search(self, index: str, body: Dict[str, Any]):
         return self.client.search(index=index, body=body)
