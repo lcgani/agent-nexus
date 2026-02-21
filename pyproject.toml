@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-nexus"
+version = "0.1.0"
+description = "Automatically convert any API into AI-ready tools in 30 seconds"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Agent Nexus Contributors"}
+]
+keywords = ["ai", "api", "tools", "agents", "automation", "elasticsearch"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "click>=8.1.7",
+    "elasticsearch>=8.15.0",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+    "jinja2>=3.1.2",
+    "sentence-transformers>=2.2.2",
+    "pyyaml>=6.0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "black>=23.7.0",
+    "flake8>=6.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/lcgani/agent-nexus"
+Repository = "https://github.com/lcgani/agent-nexus"
+Issues = "https://github.com/lcgani/agent-nexus/issues"
+
+[project.scripts]
+agent-nexus = "src.cli:cli"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
