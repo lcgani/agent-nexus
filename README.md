@@ -31,7 +31,7 @@ Agent Nexus uses 4 specialized agents working together:
 
 ```bash
 # Install from PyPI
-pip install agent-nexus
+pip install agentnexus-tools
 
 # Or install from source
 git clone https://github.com/lcgani/agent-nexus
