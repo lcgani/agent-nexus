@@ -1,25 +1,21 @@
-"""Agent 2: Tool Generator - Creates Agent Builder tools"""
 from jinja2 import Environment, FileSystemLoader
-from typing import Dict
-import logging
 from datetime import datetime
-import time
+from typing import Dict
+
+import logging
 import hashlib
+import time
 import re
 
 logger = logging.getLogger(__name__)
 
-
 class ToolGenerator:
-    """Generates Agent Builder tool code from API specs"""
-    
     def __init__(self, es_client, templates_dir='templates', skip_index=False):
         self.es = es_client
         self.jinja_env = Environment(loader=FileSystemLoader(templates_dir))
         self.skip_index = skip_index
     
     def generate(self, api_url: str) -> Dict:
-        """Generate tool from discovered API"""
         start_time = time.time()
         
         discovery_data = self._get_discovery_data(api_url)
@@ -62,7 +58,6 @@ class ToolGenerator:
 
     
     def _get_discovery_data(self, api_url: str) -> Dict:
-        """Retrieve discovery data from ES"""
         doc_id = api_url.replace('/', '_').replace(':', '_').replace('.', '_')
         try:
             result = self.es.client.get(index="api-discoveries", id=doc_id)
@@ -75,7 +70,6 @@ class ToolGenerator:
         return None
     
     def _check_existing_tool(self, api_url: str) -> Dict:
-        """Check if tool already generated"""
         query = {"query": {"term": {"source_api_discovery_id.keyword": api_url}}}
         result = self.es.search(index="agent-tools", body=query)
         if result['hits']['total']['value'] > 0:
@@ -83,35 +77,32 @@ class ToolGenerator:
         return None
     
     def _generate_tool_code(self, discovery_data: Dict) -> str:
-        """Generate simple tool code"""
         tool_class = self._to_class_name(discovery_data['api_name'])
         tool_name = self._to_snake_case(discovery_data['api_name'])
         
         code = f'''"""
-{discovery_data['api_name']} - Auto-generated Tool
-Base URL: {discovery_data['base_url']}
-"""
-import requests
+            {discovery_data['api_name']} - Auto-generated Tool
+            Base URL: {discovery_data['base_url']}
+            """
+            import requests
 
-class {tool_class}:
-    def __init__(self, api_key=None):
-        self.base_url = "{discovery_data['base_url']}"
-        self.api_key = api_key
-    
-    def _headers(self):
-        headers = {{"Content-Type": "application/json"}}
-        if self.api_key:
-            headers["Authorization"] = f"Bearer {{self.api_key}}"
-        return headers
-'''
+            class {tool_class}:
+                def __init__(self, api_key=None):
+                    self.base_url = "{discovery_data['base_url']}"
+                    self.api_key = api_key
+                
+                def _headers(self):
+                    headers = {{"Content-Type": "application/json"}}
+                    if self.api_key:
+                        headers["Authorization"] = f"Bearer {{self.api_key}}"
+                    return headers
+        '''
         return code
     
     def _generate_mcp_code(self, discovery_data: Dict) -> str:
-        """Generate MCP server code"""
         return f"# MCP Server for {discovery_data['api_name']}\n# Coming soon"
     
     def _generate_readme(self, discovery_data: Dict) -> str:
-        """Generate README"""
         return f"# {discovery_data['api_name']}\n\n{discovery_data['api_description']}\n\nEndpoints: {discovery_data['total_endpoints']}"
     
     def _generate_tool_id(self, api_name: str) -> str:

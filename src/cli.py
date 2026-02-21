@@ -1,4 +1,3 @@
-"""Agent Nexus CLI"""
 import click
 from elasticsearch import Elasticsearch
 from src.agents.introspector import APIIntrospector
