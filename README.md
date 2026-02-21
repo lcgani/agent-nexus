@@ -2,6 +2,8 @@
 
 **Automatically convert any API into AI-ready tools in 30 seconds**
 
+> ⚠️ **Experimental**: This project is in active development. Review all generated code before use in production. Contributions welcome to improve safety and reliability.
+
 Agent Nexus eliminates the need for manual API integration code. Point it at any API URL and get production-ready Python tools that AI agents can use immediately.
 
 ## What It Does
