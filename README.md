@@ -157,4 +157,4 @@ python -m src.cli search "<query>"
 
 ## License
 
-Apache-2.0
+MIT
