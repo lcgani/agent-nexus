@@ -27,29 +27,29 @@ Agent Nexus uses 4 specialized agents working together:
 - Click (CLI)
 - Docker & Docker Compose
 
+## Installation
+
+```bash
+# Install from PyPI
+pip install agent-nexus
+
+# Or install from source
+git clone https://github.com/lcgani/agent-nexus
+cd agent-nexus
+pip install -e .
+```
+
 ## Quick Start
 
 ```bash
-# 1. Start Elasticsearch
+# 1. Start Elasticsearch (optional - use --skip-index for faster generation)
 docker-compose up -d
 
-# 2. Install dependencies
-python -m venv venv
-source venv/Scripts/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+# 2. Generate your first tool
+agent-nexus generate https://api.github.com
 
-# 3. Configure environment
-cp .env.example .env
-# Note: ELASTICSEARCH_API_KEY can be left empty for local development
-
-# 4. Setup indexes
-python -m src.cli setup
-
-# 5. Generate your first tool
-python -m src.cli generate https://api.github.com
-
-# 6. Search catalog
-python -m src.cli search "code repositories"
+# 3. Use the generated tool
+python your_script.py
 ```
 
 ## Usage Examples
@@ -58,13 +58,13 @@ python -m src.cli search "code repositories"
 
 ```bash
 # GitHub
-python -m src.cli generate https://api.github.com
+agent-nexus generate https://api.github.com
 
 # Stripe
-python -m src.cli generate https://api.stripe.com
+agent-nexus generate https://api.stripe.com
 
-# OpenWeather
-python -m src.cli generate https://api.openweathermap.org
+# Fast mode (skip Elasticsearch indexing)
+agent-nexus generate https://api.github.com --skip-index
 ```
 
 ### Search with Natural Language
@@ -157,4 +157,4 @@ python -m src.cli search "<query>"
 
 ## License
 
-MIT
+Apache-2.0
